@@ -47,7 +47,7 @@ export const useVendorStore = create<State>((set) => ({
         formData.append(key, value as string); // Champs simples
       }
     });
-
+      
     const response = await fetch("http://localhost:5001/api/vendor/signUp", {
       method: "POST",
       body: formData, // Pas de header Content-Type (géré automatiquement)
