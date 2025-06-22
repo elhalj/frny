@@ -1,33 +1,37 @@
 import { create } from "zustand";
 import { FormVendor } from "../../types/types";
+import api from "../../services/api";
 
 type User = {
   _id: string;
   name: string;
   email: string;
+  image: string;
 };
 
 export type UserLogin = Omit<FormVendor, "name" | "firstName" | "address" | "gender" | "profilePic">;
 export type Vendor = Omit<FormVendor, "password">;
 
 type State = {
-  authUser: User | null;
+  authVendor: User | null;
   isSignUp: boolean;
   isLogin: boolean;
   isError: string | null;
+  token?: string | null;
   isCheckingAuth: boolean;
   isCheckingClient: boolean;
   signUp: (data: FormVendor) => Promise<void>;
   login: (data: UserLogin) => Promise<void>;
   logout: () => void;
-  checkAuth: (data: UserLogin) => Promise<void>;
+  checkAuthVendor: () => Promise<void>;
 };
 
 export const useVendorStore = create<State>((set) => ({
-  authUser: null,
+  authVendor: null,
   isSignUp: false,
   isLogin: false,
   isError: null,
+  token: null,
   isCheckingAuth: false,
   isCheckingClient: false,
   signUp: async (data: FormVendor) => {
@@ -48,17 +52,8 @@ export const useVendorStore = create<State>((set) => ({
       }
     });
       
-    const response = await fetch("http://localhost:5001/api/vendor/signUp", {
-      method: "POST",
-      body: formData, // Pas de header Content-Type (géré automatiquement)
-    });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Inscription echoue");
-      }
-      const json = await response.json();
-      set({ authUser: json.data, isSignUp: false });
+    const response = await api.post("/vendor/signUp", data);
+      set({ authVendor: response.data });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Erreur Inconnue";
@@ -69,21 +64,10 @@ export const useVendorStore = create<State>((set) => ({
   login: async (data: UserLogin) => {
     set({ isLogin: true, isError: null });
     try {
-      const response = await fetch("http://localhost:5001/api/vendor/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await api.post("/vendor/login", data);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Connexion echoue");
-      }
-
-      const json = await response.json();
-      set({ authUser: json.data, isLogin: false });
+      
+      set({ authVendor: response.data, token: response.data.token, isLogin: false });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Erreur Inconnue";
@@ -93,34 +77,22 @@ export const useVendorStore = create<State>((set) => ({
 
   logout: async () => {
     try {
-      await fetch("http://localhost:5001/api/vendor/logout", {
-        method: "POST",
-      });
-      set({ authUser: null });
+      await api.post("/vendor/logout");
+      set({ authVendor: null, token: null });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Erreur inconnu";
       set({ isError: message });
     }
   },
 
-  checkAuth: async () => {
+  checkAuthVendor: async () => {
     set({ isCheckingAuth: true });
+   
     try {
-      const response = await fetch("http://localhost:5001/api/vendor/check", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Connexion echoue");
-      }
-
-      const json = await response.json();
-      set({ authUser: json.data, isCheckingAuth: false });
+      const response = await api.get("/vendor/check");
+      set({ authVendor: response.data, token: response.data.token, isCheckingAuth: false });
     } catch (error) {
+      localStorage.removeItem("token");
       const message =
         error instanceof Error ? error.message : "Erreur inconnue";
       set({ isError: message, isCheckingAuth: false });
@@ -148,7 +120,7 @@ export const useVendorStore = create<State>((set) => ({
   //     }
 
   //     const json = await response.json();
-  //     set({ authUser: json.data, isCheckingClient: false });
+  //     set({ authVendor: json.data, isCheckingClient: false });
   //   } catch (error) {
   //     const message =
   //       error instanceof Error ? error.message : "Erreur inconnue";

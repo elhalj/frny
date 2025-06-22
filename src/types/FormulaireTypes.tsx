@@ -39,7 +39,7 @@ type GenericFormProps<T> = {
   children?: ReactNode;
 };
 
-export const GenericForm = <T extends Record<string, unknown>>({
+export const GenericForm = <T extends Record<string, string | boolean | unknown>>({
   fields,
   onSubmit,
   submitText,

@@ -1,28 +1,87 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+import { useUserStore } from "../client/store/authuser";
+import InfoAdmin from "../vendor/components/Infos";
+import { useEffect, useState } from "react";
 
 const NavBar = () => {
+  const { authUser } = useUserStore();
+  const location = useLocation();
+  const [isScrolling, setIsScrolling] = useState<{ isScrolling: boolean }>({ isScrolling: false });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling({ isScrolling: window.scrollY > 10 });
+    };
+
+    window.addEventListener("scroll", handleScroll, {passive: true});
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <>
-      <div className="flex flex-col  justify-between bg-gray-800 p-4">
-        <nav className="flex items-center justify-between ">
-          <div className="text-white text-lg font-bold">
-            <NavLink to="/">Brand</NavLink>
-          </div>
-          <ul className="flex space-x-10">
-            <li>
-              <NavLink to="/">Home</NavLink>
-            </li>
-            <li>
-              <NavLink to="/catalogue">Catalogue</NavLink>
-            </li>
-            <li>
-              <NavLink to="/sign-in">Se connecter</NavLink>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </>
+    <div className="sticky top-0">
+      <nav
+        className={` flex justify-around items-center p-4 transition duration-300 ease-in-out ${
+          isScrolling.isScrolling ? "bg-gray-800/50 backdrop-blur-lg shadow-lg" : "bg-gray-800"
+        }`}
+      >
+        <div className="text-white text-lg font-bold">
+          <NavLink
+            to="/"
+            className="hover:underline hover:text-blue-400 transition duration-300 ease-in-out"
+          >
+            Brand
+          </NavLink>
+        </div>
+        <ul className="flex space-x-10">
+          <li>
+            <NavLink
+              to="/"
+              className={`hover:text-blue-400 transition duration-300 ease-in-out ${
+                location.pathname === "/" ? "font-bold" : ""
+              }`}
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/catalogue"
+              className={`hover:text-blue-400 transition duration-300 ease-in-out ${
+                location.pathname === "/catalogue" ? "font-bold" : ""
+              }`}
+            >
+              Catalogue
+            </NavLink>
+          </li>
+          <li>
+            {authUser ? (
+              <NavLink
+                to="/"
+                className="hover:text-blue-400 transition duration-300 ease-in-out"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  window.location.reload();
+                }}
+              >
+                Se deconnecter
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/sign-in"
+                className="hover:text-blue-400 transition duration-300 ease-in-out"
+              >
+                Se connecter
+              </NavLink>
+            )}
+          </li>
+        </ul>
+      </nav>
+      <InfoAdmin isScrolling={isScrolling.isScrolling}/>
+    </div>
   );
 };
 
 export default NavBar;
+
