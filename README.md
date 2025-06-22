@@ -1,54 +1,80 @@
-# React + TypeScript + Vite
+# FRNY Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend du projet FRNY – une plateforme e-commerce moderne.
 
-Currently, two official plugins are available:
+## 🚀 Fonctionnalités principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Interface utilisateur responsive et moderne
+- Navigation avec React Router
+- Authentification et gestion des sessions côté client
+- Consommation d'API REST pour les produits, utilisateurs, vendeurs, commandes, etc.
+- State management avec Zustand
+- Intégration TailwindCSS pour le style et DaisyUI pour les composants
+- Sécurité des données côté frontend (ex : gestion des tokens en localStorage/cookies)
 
-## Expanding the ESLint configuration
+## 🛠️ Stack technique
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 19** (avec hooks)
+- **TypeScript**
+- **Vite** (développement et build)
+- **TailwindCSS** & **DaisyUI**
+- **Zustand** (state management simple)
+- **Axios** (requêtes HTTP)
+- **Lucide-react** (icônes modernes)
+- **ESLint** (linting et qualité de code)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 📁 Structure du projet
+
+```
+frny/
+├── public/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── hooks/
+│   ├── store/
+│   ├── utils/
+│   └── App.tsx
+├── index.html
+├── package.json
+├── tailwind.config.js
+├── vite.config.ts
+└── ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚡ Installation et démarrage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Clone ce dépôt
+2. Installe les dépendances :
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm install
 ```
+
+3. Lance le serveur de dev :
+
+```bash
+npm run dev
+```
+
+4. Pour builder l’app :
+
+```bash
+npm run build
+```
+
+## 🌍 Variables d’environnement
+
+Crée un fichier `.env` selon tes besoins (voir `.env.example` si disponible).  
+Paramètre typique :
+
+- URL de l’API backend : `VITE_API_URL=http://localhost:5000`
+
+## 🤝 Contribuer
+
+Les contributions sont bienvenues !  
+Merci de proposer une issue ou une PR si tu veux améliorer le projet.
+
+## 📄 Licence
+
+Ce projet est sous licence MIT – voir le fichier [LICENSE](./LICENSE) pour plus d’infos.
