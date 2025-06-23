@@ -9,7 +9,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
   const [low, setLow] = useState(5)
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
+    <div className="bg-white text-gray-500 rounded-lg shadow-md p-4">
       {article.image && (
         <img 
           src={article.image} 
@@ -22,17 +22,17 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         <h3 className="text-2xl font-bold">{article.name}</h3>
         
         {article.details && (
-          <p className="text-gray-600">{article.details}</p>
+          <p className="text-gray-600">Details: {article.details}</p>
         )}
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col justify-between">
           <span className="text-lg font-bold">{article.price?.toFixed(2)} €</span>
-          <span className="text-gray-600">{article.category}</span>
+          <span className="text-gray-600">Category: {article.category}</span>
         </div>
 
         {article.stock && (
           <div className="mt-2">
-            Stock : {article.stock > 0 ? article.stock : article.stock >=  low ? (
+            Stock : {article.stock > 0 ? article.stock : article.stock <=  low ? (
               <div className="bg-red-200 p-2 rounded-md">
                 {article.stock}
               </div>
@@ -47,13 +47,20 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         {typeof article.vendor === 'object' ? (
           <div className="mt-4">
                       <p className="text-gray-600">Vendeur : {article.vendor.name}</p>
-                      <p className="text-gray-600">ID : {article.vendor._id}</p>
           </div>
         ) : (
           <div className="mt-4">
             Vendeur : {article.vendor}
           </div>
         )}
+      </div>
+      <div className="flex justify-between items-center mt-4">
+        <button type="button" 
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
+          onClick={() => alert(`Ajouté au panier : ${article.name}`)}
+        >
+          Ajouter au panier
+        </button>
       </div>
     </div>
   );

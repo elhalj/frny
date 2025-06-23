@@ -2,6 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useUserStore } from "../client/store/authuser";
 import InfoAdmin from "../vendor/components/Infos";
 import { useEffect, useState } from "react";
+import NavBarCheck from "../client/components/NavBarCheck";
 
 const NavBar = () => {
   const { authUser } = useUserStore();
@@ -34,7 +35,7 @@ const NavBar = () => {
             Brand
           </NavLink>
         </div>
-        <ul className="flex space-x-10">
+        <ul className="flex items-center space-x-10">
           <li>
             <NavLink
               to="/"
@@ -57,16 +58,7 @@ const NavBar = () => {
           </li>
           <li>
             {authUser ? (
-              <NavLink
-                to="/"
-                className="hover:text-blue-400 transition duration-300 ease-in-out"
-                onClick={() => {
-                  localStorage.removeItem("token");
-                  window.location.reload();
-                }}
-              >
-                Se deconnecter
-              </NavLink>
+              <NavBarCheck/>
             ) : (
               <NavLink
                 to="/sign-in"
