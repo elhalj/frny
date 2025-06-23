@@ -6,34 +6,32 @@ import Login from "./client/components/FormulaireLogin";
 import { useUserStore } from "./client/store/authuser";
 import NavBar from "./components/NavBar";
 import { useEffect } from "react";
-import NavBarCheck from "./client/components/NavBarCheck";
 import Sign_Up from "./vendor/components/SignUp";
 import Log_In from "./vendor/components/Login";
 import Home from "./pages/Home";
 import { useVendorStore } from "./vendor/store/authvendor";
 import Dashboard from "./vendor/admin/Dashboard";
+import VendorPrivateRoute from "./secure/vendorPrivateRoute";
 
 function App() {
-  const { checkAuth, authUser } = useUserStore();
-  const { checkAuthVendor, authVendor } = useVendorStore();
+  const { checkAuth } = useUserStore();
+  const { authVendor } = useVendorStore();
 
 useEffect(() => {
   const initializeAuth = async () => {
     await checkAuth();
-    await checkAuthVendor();
     
     // Attendre que l'authentification soit confirmée
    
   };
   initializeAuth();
-}, [checkAuth, checkAuthVendor, authVendor]); // Retirer getVendorArticle des dépendances
+}, [checkAuth]); // Retirer getVendorArticle des dépendances
   // useEffect(() => {
   //   const initializeAuth = async () => {
   //     await Promise.all([checkAuth(), checkAuthVendor(), getVendorArticle()]);
   //   };
   //   initializeAuth();
   // }, [checkAuth, checkAuthVendor, getVendorArticle]);
-  console.log(authVendor) 
 
  
 
@@ -47,8 +45,7 @@ useEffect(() => {
         </div>
       )} */}
       {/* <InfoAdmin /> */}
-      {authUser && <NavBarCheck />}
-      {authUser && <h1>Welcome {authUser.name}</h1>}
+      
       {/* <Form /> */}
      
 <Routes>
@@ -66,12 +63,9 @@ useEffect(() => {
     />
     <Route 
       path="admin/dashboard" 
-      element={authVendor ? (
-        <Dashboard  />
-      ) : (
-        <Navigate to="../sign-in" replace />
-      )}
-    >
+      element={<VendorPrivateRoute />}
+          >
+    <Route index element={<Dashboard />} />
     <Route path="admin/add" element={<div>Ajouter un produit</div>} />
     <Route path="admin/edit" element={<div>Modifier un produit</div>} /></Route>
   </Route>

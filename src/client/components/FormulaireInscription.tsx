@@ -4,6 +4,7 @@ import { FormUser } from "../../types/types";
 import { useUserStore } from "../store/authuser";
 import { FormField } from "../../types/types";
 import SlideTo from "../../components/SlideTo";
+import { FormEventHandler } from "react";
 
 const SignUp = () => {
   const { signUp, isSignUp, isError } = useUserStore();
@@ -12,10 +13,33 @@ const SignUp = () => {
     { name: "name", type: "text", label: "Nom", required: true },
     { name: "firstName", type: "text", label: "Prénom", required: true },
     { name: "email", type: "email", label: "Email", required: true },
-    { name: "password", type: "password", label: "Mot de passe", required: true },
-    { name: "address.city", type: "text", label: "Ville", required: true, nested: true },
-    { name: "address.municipality", type: "text", label: "Commune", required: true, nested: true },
-    { name: "address.number", type: "text", label: "Numéro", required: true, nested: true },
+    {
+      name: "password",
+      type: "password",
+      label: "Mot de passe",
+      required: true,
+    },
+    {
+      name: "address.city",
+      type: "text",
+      label: "Ville",
+      required: true,
+      nested: true,
+    },
+    {
+      name: "address.municipality",
+      type: "text",
+      label: "Commune",
+      required: true,
+      nested: true,
+    },
+    {
+      name: "address.number",
+      type: "text",
+      label: "Numéro",
+      required: true,
+      nested: true,
+    },
   ];
 
   const initialValues: FormUser = {
@@ -26,14 +50,46 @@ const SignUp = () => {
     address: {
       city: "",
       municipality: "",
-      number: ""
-    }
+      number: "",
+    },
+  };
+
+  interface SigninFormElements extends HTMLFormControlsCollection {
+    name: HTMLInputElement;
+    firstName: HTMLInputElement;
+    email: HTMLInputElement;
+    password: HTMLInputElement;
+    address: {
+      city: HTMLInputElement;
+      municipality: HTMLInputElement;
+      number: HTMLInputElement;
+    };
+  }
+
+  interface SigninForm extends HTMLFormElement {
+    readonly elements: SigninFormElements;
+  }
+ 
+  const handleSubmit: FormEventHandler<SigninForm> = async (e) => {
+    e.preventDefault();
+    const inputProps = {
+      name: e.currentTarget.name.value,
+      firstName: e.currentTarget.firstName.value,
+      email: e.currentTarget.email.value,
+      password: e.currentTarget.password.value,
+      address: {
+        city: e.currentTarget.address.city.value,
+        municipality: e.currentTarget.address.municipality.value,
+        number: e.currentTarget.address.number.value,
+      },
+    };
+    await signUp(inputProps);
   };
 
   return (
     <GenericForm<FormUser>
       fields={formFields}
-      onSubmit={signUp}
+      onSubmit={handleSubmit}
       submitText="S'inscrire"
       loadingText="Inscription en cours..."
       isLoading={isSignUp}

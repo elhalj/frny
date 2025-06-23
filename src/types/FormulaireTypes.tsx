@@ -30,7 +30,7 @@ type FormField = {
 
 type GenericFormProps<T> = {
   fields: FormField[];
-  onSubmit: (data: T) => Promise<void>;
+  onSubmit: FormEventHandler<HTMLFormElement>;
   submitText: string;
   loadingText?: string;
   isLoading?: boolean;
@@ -51,10 +51,6 @@ export const GenericForm = <T extends Record<string, string | boolean | unknown>
 }: GenericFormProps<T>) => {
   const [formData, setFormData] = useState<T>(initialValues);
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
-    await onSubmit(formData);
-  };
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -156,7 +152,7 @@ export const GenericForm = <T extends Record<string, string | boolean | unknown>
   return (
     <div className="container mx-auto my-10 px-4">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
         className="flex flex-col items-center gap-4 p-2 border shadow-2xl"
       >
         {fields.map((field) => (

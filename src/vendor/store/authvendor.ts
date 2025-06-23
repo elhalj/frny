@@ -68,6 +68,7 @@ export const useVendorStore = create<State>((set) => ({
 
       
       set({ authVendor: response.data, token: response.data.token, isLogin: false });
+      localStorage.setItem("token", response.data.token);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Erreur Inconnue";
@@ -90,9 +91,8 @@ export const useVendorStore = create<State>((set) => ({
    
     try {
       const response = await api.get("/vendor/check");
-      set({ authVendor: response.data, token: response.data.token, isCheckingAuth: false });
+      set({ authVendor: response.data, isCheckingAuth: false });
     } catch (error) {
-      localStorage.removeItem("token");
       const message =
         error instanceof Error ? error.message : "Erreur inconnue";
       set({ isError: message, isCheckingAuth: false });
