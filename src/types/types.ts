@@ -5,8 +5,8 @@ export interface FormField {
   label: string;
   required?: boolean;
   nested?: boolean;
-    placeholder?: string;
-    title?: string;
+  placeholder?: string;
+  title?: string;
   options?: Array<{ value: string | number; label: string }>;
 } // Suppression de l'import mal placé
 
@@ -21,7 +21,7 @@ export type FormVendor = {
     number: string;
   };
   gender: string;
-  profilePic: File | null ; // Modification du type pour les fichiers
+  profilePic: File | null; // Modification du type pour les fichiers
 };
 
 export type FormUser = {
@@ -29,11 +29,12 @@ export type FormUser = {
   firstName: string;
   email: string;
   password: string;
-  address: {
-    city: string;
-    municipality: string;
-    number: string;
-  };
+  token?: string;
+  address: string;
+  street: string;
+  city: string;
+  municipality: string;
+  image?: File | null | undefined
 };
 
 export type FormArticle = {
@@ -44,9 +45,11 @@ export type FormArticle = {
   stock: number;
   rate?: number;
   image: File | null; // Modification pour gérer les fichiers
-  vendor?: string | {
-    _id: string;
-    name: string
-  };
+  vendor?:
+    | string
+    | {
+        _id: string;
+        name: string;
+      };
   email?: string;
 };

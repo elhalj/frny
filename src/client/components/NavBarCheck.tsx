@@ -9,6 +9,8 @@ const NavBarCheck = () => {
     <div  className="flex flex-row items-center xl:flex-row-reverse gap-10 bg-gray-800 p-4 rounded-lg">
       <NavLink to="/box" className="text-white flex flex-col items-center justify-center">
         <UserRoundCheck className="h-5 w-5 text-white" />
+        {/* user image */}
+        {/* {authUser &&<div><img src={authUser.image} alt={authUser.name}  className="w-10 h-10 rounded-full"/></div>} */}
         {authUser && <span className="uppercase text-gray-400 ">{authUser.name}</span>}
       </NavLink>
       <NavLink to="/bascket" className="text-white">

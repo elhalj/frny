@@ -1,7 +1,6 @@
 // import Form from "./components/Form"
 
 import { /* Navigate*/ Navigate, Route, Routes } from "react-router-dom";
-import SignUp from "./client/components/FormulaireInscription";
 import Login from "./client/components/FormulaireLogin";
 import { useUserStore } from "./client/store/authuser";
 import NavBar from "./components/NavBar";
@@ -12,6 +11,7 @@ import Home from "./pages/Home";
 import { useVendorStore } from "./vendor/store/authvendor";
 import Dashboard from "./vendor/admin/Dashboard";
 import VendorPrivateRoute from "./secure/vendorPrivateRoute";
+import Signup from "./screen/Signup";
 
 function App() {
   const { checkAuth } = useUserStore();
@@ -51,7 +51,8 @@ useEffect(() => {
 <Routes>
   {/* Routes publiques */}
   <Route path="/" element={<Home />} />
-  <Route path="/sign-up" element={<SignUp />} />
+  {/* <Route path="/sign-up" element={<SignUp />} /> */}
+  <Route path="/sign-up" element={<Signup />} />
   <Route path="/sign-in" element={<Login />} />
 
   {/* Routes vendeur */}

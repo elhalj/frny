@@ -21,8 +21,11 @@ const NavBar = () => {
                   sizes="22"
                   className="rounded-full"
                 />
-      {authVendor && <h1>Welcome {authVendor.name} {authVendor.image}</h1>}
-
+                {authVendor && (
+                  <h1>
+                    Welcome {authVendor.name} {authVendor.image}
+                  </h1>
+                )}
               </div>
               {showLog && (
                 <div
@@ -41,10 +44,12 @@ const NavBar = () => {
               className="relative flex flex-col gap-2 bg-amber-200 p-2 m-2 rounded-full text-black border border-amber-400  cursor-pointer"
             >
               {" "}
-                              <User />
-                              {showLog && (<div className="absolute bottom-0 bg-slate-600 translate-y-20 p-4 rounded-lg">
-                                  Se connecter
-                              </div>)}
+              <User />
+              {showLog && (
+                <div className="absolute bottom-0 bg-slate-600 translate-y-20 p-4 rounded-lg">
+                  Se connecter
+                </div>
+              )}
             </div>
           )}
         </div>
