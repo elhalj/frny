@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FormUser } from "../../types/types";
-import api from "../../services/api";
+import { FormUser } from "../constants/types";
+import api from "../services/api";
 
 type User = {
   _id: string;
@@ -10,14 +10,23 @@ type User = {
   token?: string;
   firstName: string;
   address: string;
-    street: string;
-    city: string;
-    postalCode: string;
+  street: string;
+  city: string;
+  postalCode: string;
   country: string;
-    image: string
+  image: string;
 };
 
-export type UserLogin = Omit<FormUser, "name" | "firstName" | "address">;
+export type UserLogin = Omit<
+  FormUser,
+  | "name"
+  | "firstName"
+  | "address"
+  | "city"
+  | "municipality"
+  | "street"
+  | "image"
+>;
 
 type State = {
   authUser: User | null;
@@ -51,7 +60,8 @@ export const useUserStore = create<State>()(
           const response = await api.post("/user/signUp", data);
           set({ authUser: response.data.data, isSignUp: false });
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Erreur inconnue";
+          const message =
+            error instanceof Error ? error.message : "Erreur inconnue";
           set({ isError: message, isSignUp: false });
         }
       },
@@ -65,7 +75,8 @@ export const useUserStore = create<State>()(
             isLogin: false,
           });
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Erreur inconnue";
+          const message =
+            error instanceof Error ? error.message : "Erreur inconnue";
           set({ isError: message, isLogin: false });
         }
       },
@@ -83,7 +94,7 @@ export const useUserStore = create<State>()(
 
       checkAuth: async () => {
         set({ isCheckingAuth: true });
-        const {token} = get();
+        const { token } = get();
         if (!token) {
           set({ isCheckingAuth: false });
           return;
@@ -92,7 +103,12 @@ export const useUserStore = create<State>()(
           const response = await api.get("/user/check");
           set({ authUser: response.data.data, isCheckingAuth: false });
         } catch {
-          set({ authUser: null, token: null, isError: "Erreur inconnue", isCheckingAuth: false });
+          set({
+            authUser: null,
+            token: null,
+            isError: "Erreur inconnue",
+            isCheckingAuth: false,
+          });
         }
       },
     }),

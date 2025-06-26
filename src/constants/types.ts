@@ -15,13 +15,12 @@ export type FormVendor = {
   firstName: string;
   email: string;
   password: string;
-  address: {
-    city: string;
-    municipality: string;
-    number: string;
-  };
-  gender: string;
-  profilePic: File | null; // Modification du type pour les fichiers
+  address: string;
+  city: string;
+  municipality: string;
+  number: string;
+  gender: "Homme" | "Femme";
+  profilePic: File | null | undefined; // Modification du type pour les fichiers
 };
 
 export type FormUser = {
@@ -34,7 +33,7 @@ export type FormUser = {
   street: string;
   city: string;
   municipality: string;
-  image?: File | null | undefined
+  image?: File | null | undefined;
 };
 
 export type FormArticle = {

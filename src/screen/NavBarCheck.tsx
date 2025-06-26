@@ -4,7 +4,7 @@ import { useUserStore } from "../store/authuser";
 
 
 const NavBarCheck = () => {
-  const {logout, authUser} = useUserStore();
+  const { logout, authUser } = useUserStore();
   return (
     <div  className="flex flex-row items-center xl:flex-row-reverse gap-10 bg-gray-800 p-4 rounded-lg">
       <NavLink to="/box" className="text-white flex flex-col items-center justify-center">
@@ -12,6 +12,7 @@ const NavBarCheck = () => {
         {/* user image */}
         {/* {authUser &&<div><img src={authUser.image} alt={authUser.name}  className="w-10 h-10 rounded-full"/></div>} */}
         {authUser && <span className="uppercase text-gray-400 ">{authUser.name}</span>}
+        
       </NavLink>
       <NavLink to="/bascket" className="text-white">
         <div className="relative">

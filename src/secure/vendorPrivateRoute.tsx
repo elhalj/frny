@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useVendorStore } from "../vendor/store/authvendor"
+import { useVendorStore } from "../store/authvendor"
 
 
 const VendorPrivateRoute = () => {

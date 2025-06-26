@@ -1,8 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { useUserStore } from "../client/store/authuser";
-import InfoAdmin from "../vendor/components/Infos";
+import { useUserStore } from "../store/authuser";
 import { useEffect, useState } from "react";
-import NavBarCheck from "../client/components/NavBarCheck";
+import NavBarCheck from "../screen/NavBarCheck";
 
 const NavBar = () => {
   const { authUser } = useUserStore();
@@ -70,7 +69,6 @@ const NavBar = () => {
           </li>
         </ul>
       </nav>
-      <InfoAdmin isScrolling={isScrolling.isScrolling}/>
     </div>
   );
 };

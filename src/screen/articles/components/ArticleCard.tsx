@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Article } from "../store/article";
+import { Article } from "../../../store/article";
 
 interface ArticleCardProps {
   article: Article;

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useArticleStore } from "../store/article";
+import { useArticleStore } from "../../../store/article";
 import ArticleCard from "./ArticleCard";
 
 const PublicArticles = () => {

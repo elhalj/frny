@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
-import { UserLogin, useUserStore } from "../client/store/authuser";
-import { FormUser } from "../types/types";
+import { UserLogin, useUserStore } from "../store/authuser";
+import { FormUser } from "../constants/types";
 
 interface UserContextType {
     handleLogin: (data: UserLogin) => Promise<void>;

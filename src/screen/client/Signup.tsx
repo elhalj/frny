@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import { useUserStore } from "../client/store/authuser";
-import { FormUser } from "../types/types";
+import { useUserStore } from "../../store/authuser";
+import { FormUser } from "../../constants/types";
 
 const Signup = () => {
   const imageRef = useRef<HTMLInputElement>(null);
-  const { signUp, isSignUp, isError } = useUserStore();
+  const { signUp, isSignUp } = useUserStore();
   const [fields, setFields] = useState<FormUser>({
     name: "",
     firstName: "",
@@ -18,11 +18,19 @@ const Signup = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files, type } = e.target;
-    setFields((prev) => ({
-      ...prev,
-      [name]: type === "file" ? (files && files[0]) || null : value,
-    }));
+    const { name, value, type } = e.target;
+    if (e.target instanceof HTMLInputElement) {
+      const files = e.target.files;
+      setFields((prev) => ({
+        ...prev,
+        [name]: type === "file" ? (files && files[0]) || null : value,
+      }));
+    } else {
+      setFields((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

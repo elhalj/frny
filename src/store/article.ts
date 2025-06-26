@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { FormArticle } from "../../types/types";
-import api from "../../services/api";
+import { FormArticle } from "../constants/types";
+import api from "../services/api";
 
 export type Article = {
   _id: string;
