@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { useUserStore } from "../client/store/authuser"
+import { useUserStore } from "../store/authuser"
 
 
 const UserPrivateRoute = () => {

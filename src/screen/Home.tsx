@@ -1,4 +1,4 @@
-import PublicArticles from "../articles/components/PublicArticles"
+import PublicArticles from "./articles/components/PublicArticles"
 
 const Home = () => {
   return (

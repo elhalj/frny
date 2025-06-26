@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FormUser } from "../../types/types";
-import api from "../../services/api";
+import { FormUser } from "../constants/types";
+import api from "../services/api";
 
 type User = {
   _id: string;
@@ -9,15 +9,24 @@ type User = {
   email: string;
   token?: string;
   firstName: string;
-  address: {
-    street: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
+  address: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  image: string;
 };
 
-export type UserLogin = Omit<FormUser, "name" | "firstName" | "address">;
+export type UserLogin = Omit<
+  FormUser,
+  | "name"
+  | "firstName"
+  | "address"
+  | "city"
+  | "municipality"
+  | "street"
+  | "image"
+>;
 
 type State = {
   authUser: User | null;
@@ -51,24 +60,23 @@ export const useUserStore = create<State>()(
           const response = await api.post("/user/signUp", data);
           set({ authUser: response.data.data, isSignUp: false });
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Erreur inconnue";
+          const message =
+            error instanceof Error ? error.message : "Erreur inconnue";
           set({ isError: message, isSignUp: false });
         }
       },
 
       login: async (data: UserLogin) => {
         set({ isLogin: true, isError: null });
-        const token = localStorage.getItem("user-store");
         try {
           const response = await api.post("/user/login", data);
           set({
             authUser: response.data.data,
-            token: token || response.data.token,
             isLogin: false,
           });
-          localStorage.setItem("token", response.data.token);
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Erreur inconnue";
+          const message =
+            error instanceof Error ? error.message : "Erreur inconnue";
           set({ isError: message, isLogin: false });
         }
       },
@@ -86,7 +94,7 @@ export const useUserStore = create<State>()(
 
       checkAuth: async () => {
         set({ isCheckingAuth: true });
-        const token = get().token;
+        const { token } = get();
         if (!token) {
           set({ isCheckingAuth: false });
           return;
@@ -95,7 +103,12 @@ export const useUserStore = create<State>()(
           const response = await api.get("/user/check");
           set({ authUser: response.data.data, isCheckingAuth: false });
         } catch {
-          set({ authUser: null, token: null, isError: "Erreur inconnue", isCheckingAuth: false });
+          set({
+            authUser: null,
+            token: null,
+            isError: "Erreur inconnue",
+            isCheckingAuth: false,
+          });
         }
       },
     }),
