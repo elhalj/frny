@@ -20,7 +20,7 @@ const Signup = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
     if (e.target instanceof HTMLInputElement) {
-      const files = e.target.files;
+      const {files} = e.target;
       setFields((prev) => ({
         ...prev,
         [name]: type === "file" ? (files && files[0]) || null : value,
@@ -47,11 +47,19 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <h1>Inscription</h1>
-        <div>
-          <label htmlFor="name">Name:</label>
+    <div className="bg-gray-100 h-screen flex justify-center items-center">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full"
+      >
+        <h1 className="text-2xl font-bold text-center mb-6">Inscription</h1>
+        <div className="mb-4">
+          <label
+            htmlFor="name"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Name:
+          </label>
           <input
             type="text"
             name="name"
@@ -59,10 +67,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="John"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="firstName">FirstName:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="firstName"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            FirstName:
+          </label>
           <input
             type="text"
             name="firstName"
@@ -70,10 +84,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="Doe"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="email">Email:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="email"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Email:
+          </label>
           <input
             type="email"
             name="email"
@@ -81,10 +101,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="johndoe@gmail.com"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="password"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Password:
+          </label>
           <input
             type="password"
             name="password"
@@ -92,10 +118,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="********"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="address">Address:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="address"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Address:
+          </label>
           <input
             type="text"
             name="address"
@@ -103,10 +135,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="Abidjan rue 25 jean-chale"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="city">City:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="city"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            City:
+          </label>
           <input
             type="text"
             name="city"
@@ -114,10 +152,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="Abidjan"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="municipality">Municipality:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="municipality"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Municipality:
+          </label>
           <input
             type="text"
             name="municipality"
@@ -125,10 +169,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="cocody"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="street">Street:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="street"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Street:
+          </label>
           <input
             type="text"
             name="street"
@@ -136,10 +186,16 @@ const Signup = () => {
             onChange={handleChange}
             placeholder="Street name"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
-        <div>
-          <label htmlFor="image">Profile Picture:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="image"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Profile Picture:
+          </label>
           <input
             type="file"
             name="image"
@@ -149,6 +205,7 @@ const Signup = () => {
             title="Upload your profile picture"
             placeholder="Profile picture"
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
           <div>
             {fields.image && (
@@ -160,7 +217,11 @@ const Signup = () => {
             )}
           </div>
         </div>
-        <button type="submit" disabled={isSignUp}>
+        <button
+          type="submit"
+          disabled={isSignUp}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
           {isSignUp ? "Loading..." : "Sign up"}
         </button>
       </form>

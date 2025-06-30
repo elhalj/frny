@@ -7,16 +7,16 @@ export type Article = {
   name: string;
   price: number;
   category: string;
-  vendor:
-    | {
+  vendor:{
         _id: string;
         name: string;
         email?: string;
       }
-    | string;
+  | string[];
+  rate?: number;
   details?: string;
   stock?: number;
-  image?: string;
+  image?: File | null;
 };
 
 type State = {
@@ -31,7 +31,7 @@ type State = {
   isChecked: boolean;
   add: (data: FormArticle) => Promise<void>;
   getVendorArticle: () => Promise<void>;
-  updateArticle: (data: FormArticle, articleId: string) => Promise<void>;
+  updateArticle: (data: Article, articleId: string) => Promise<void>;
   deleteArticle: (articleId: string) => Promise<void>;
   publicArticles: Article[] | null; // Nouvel état pour les articles publics
   isPublicLoading: boolean;
@@ -61,11 +61,13 @@ export const useArticleStore = create<State>((set) => ({
   add: async (data: FormArticle) => {
     set({ isAdd: true, isError: null });
     try {
-      const response = await api.post("/article/add", data);
+      const response = await api.post("/article/add", data, {
+        headers: {"Content-Type": "multipart/form-data"}
+      });
       set((state) => ({
         articles: state.articles
-          ? [...state.articles, response.data]
-          : [response.data],
+          ? [...state.articles, response.data.data]
+          : [response.data.data],
         isAdd: false,
       }));
     } catch (error) {
@@ -102,14 +104,14 @@ export const useArticleStore = create<State>((set) => ({
     }
   },
 
-  updateArticle: async (data: FormArticle, articleId: string) => {
+  updateArticle: async (data: Article, articleId: string) => {
     set({ isUpdated: true, isError: null });
     try {
-      const response = await api.put(`/article/update/${articleId}`, data);
+      const response = await api.put(`/article/update/${articleId}`, data,);
       set((state) => ({
         articles:
           state.articles?.map((art) =>
-            art._id === articleId ? response.data : art
+            art._id === articleId ? response.data.data : art
           ) || null,
         isUpdated: false,
       }));

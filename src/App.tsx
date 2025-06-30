@@ -8,6 +8,7 @@ import Signup from "./screen/client/Signup";
 import Login from "./screen/client/Login";
 import SignupVendor from "./screen/admin/Signup";
 import LoginVendor from "./screen/admin/Login";
+import ArticleForm from "./screen/admin/ArticleForm";
 
 function App() {
 
@@ -28,8 +29,8 @@ function App() {
           <Route path="sign-in" element={<LoginVendor />} />
           <Route path="admin/dashboard" element={<VendorPrivateRoute />}>
             <Route index element={<Dashboard />} />
-            <Route path="admin/add" element={<div>Ajouter un produit</div>} />
-            <Route path="admin/edit" element={<div>Modifier un produit</div>} />
+            <Route path="add" element={<ArticleForm />} />
+            <Route path="edit" element={<ArticleForm />} />
           </Route>
         </Route>
       </Routes>

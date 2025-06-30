@@ -53,21 +53,8 @@ export const useVendorStore = create<State>()(
       signUp: async (data: FormVendor) => {
         set({ isSignUp: true, isError: null });
         try {
-          const formData = new FormData();
-
-          // Add all fields to FormData
-          Object.entries(data).forEach(([key, value]) => {
-            if (key === "profilePic" && value instanceof File) {
-              formData.append(key, value); // Raw file
-            } else if (key === "address") {
-              formData.append(key, JSON.stringify(value)); // Address object as JSON
-            } else {
-              formData.append(key, value as string); // Simple fields
-            }
-          });
-
-          const response = await api.post("/vendor/signUp", formData);
-          set({ authVendor: response.data, isSignUp: false });
+          const response = await api.post("/vendor/signUp", data);
+          set({ authVendor: response.data.data, isSignUp: false });
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur Inconnue";
@@ -80,7 +67,7 @@ export const useVendorStore = create<State>()(
         try {
           const response = await api.post("/vendor/login", data);
           set({
-            authVendor: response.data,
+            authVendor: response.data.data,
             token: response.data.token,
             isLogin: false,
           });
