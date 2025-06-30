@@ -3,10 +3,12 @@ import { LucideAward, Notebook, ShoppingCart, UserRoundCheck } from "lucide-reac
 import { NavLink } from "react-router-dom";
 import { useUserStore } from "../store/authuser";
 import { useVendorStore } from "../store/authvendor";
+import { useCartStore } from "../store/cart";
 
 const NavBarCheck = () => {
   const { logout, authUser } = useUserStore();
   const { authVendor, logout: vendorLogout } = useVendorStore();
+  const { cartItems } = useCartStore();
   return (
     <div>
       {authUser && (
@@ -25,9 +27,12 @@ const NavBarCheck = () => {
           <NavLink to="/bascket" className="text-white">
             <div className="relative">
               <ShoppingCart className="h-5 w-5 text-white" />
-              <span className="absolute -top-2 -right-4 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
-                3
-              </span>
+              {cartItems.length > 0 ? (<span className="absolute -top-2 -right-4 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+                {cartItems.length}
+              </span>) : (<span className="absolute -top-2 -right-4 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+                0
+              </span>)}
+              
             </div>
           </NavLink>
           <button
