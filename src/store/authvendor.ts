@@ -55,6 +55,7 @@ export const useVendorStore = create<State>()(
         try {
           const response = await api.post("/vendor/signUp", data);
           set({ authVendor: response.data.data, isSignUp: false });
+
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur Inconnue";

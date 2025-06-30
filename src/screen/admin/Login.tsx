@@ -25,6 +25,7 @@ const Login = () => {
       if (authVendor) {
         navigate("/vendor/admin/dashboard");
       }
+
     } catch (error) {
       console.error(error);
       alert("Erreur lors de la connexion");
@@ -64,6 +65,7 @@ const Login = () => {
           >
             Password:
           </label>
+
           <input
             type="password"
             name="password"
@@ -87,4 +89,3 @@ const Login = () => {
 };
 
 export default Login;
-

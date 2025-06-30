@@ -29,4 +29,3 @@ const PublicArticles = () => {
 };
 
 export default PublicArticles;
-

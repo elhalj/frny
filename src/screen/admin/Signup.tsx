@@ -217,7 +217,6 @@ const Signup = () => {
           >
             {isSignUp ? "Loading..." : "Sign up"}
           </button>
-        </div>
       </form>
     </div>
   );
