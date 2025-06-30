@@ -2,9 +2,11 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useUserStore } from "../store/authuser";
 import { useEffect, useState } from "react";
 import NavBarCheck from "../screen/NavBarCheck";
+import { useVendorStore } from "../store/authvendor";
 
 const NavBar = () => {
   const { authUser } = useUserStore();
+  const {authVendor} = useVendorStore();
   const location = useLocation();
   const [isScrolling, setIsScrolling] = useState<{ isScrolling: boolean }>({ isScrolling: false });
 
@@ -20,7 +22,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <div className="sticky top-0">
+    <div className="sticky top-0 z-50">
       <nav
         className={` flex justify-around items-center p-4 transition duration-300 ease-in-out ${
           isScrolling.isScrolling ? "bg-gray-800/50 backdrop-blur-lg shadow-lg" : "bg-gray-800"
@@ -58,7 +60,7 @@ const NavBar = () => {
           <li>
             {authUser ? (
               <NavBarCheck/>
-            ) : (
+            ) : authVendor ? <NavBarCheck/> : (
               <NavLink
                 to="/sign-in"
                 className="hover:text-blue-400 transition duration-300 ease-in-out"
@@ -67,6 +69,15 @@ const NavBar = () => {
               </NavLink>
             )}
           </li>
+          {!authVendor &&(
+          <li>
+            <NavLink
+              to="/vendor/sign-in"
+              className="hover:text-blue-400 transition duration-300 ease-in-out"
+            >
+              Vendor connect
+            </NavLink>
+          </li>)}
         </ul>
       </nav>
     </div>

@@ -13,7 +13,7 @@ const PublicArticles = () => {
   if (publicError) return <div className="text-center text-red-500 py-4">Erreur : {publicError}</div>;
 
   return (
-    <div className="public-articles-container p-6 bg-gray-100 rounded-lg shadow-md">
+    <div className="public-articles-container bg-gray-100 rounded-lg shadow-md p-6 backdrop-blur-md bg-opacity-50">
       <h2 className="text-3xl font-bold text-center mb-6">Tous nos produits</h2>
       <div className="articles-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {publicArticles?.length ? (
