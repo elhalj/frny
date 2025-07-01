@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useUserStore } from "../store/authuser";
 import { useEffect, useState } from "react";
-import NavBarCheck from "../screen/NavBarCheck";
+import NavBarCheck from "../screen/ui/NavBarCheck";
 import { useVendorStore } from "../store/authvendor";
 
 const NavBar = () => {
@@ -62,7 +62,7 @@ const NavBar = () => {
               <NavBarCheck/>
             ) : authVendor ? <NavBarCheck/> : (
               <NavLink
-                to="/sign-in"
+                to="/user/sign-in"
                 className="hover:text-blue-400 transition duration-300 ease-in-out"
               >
                 Se connecter

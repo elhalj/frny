@@ -1,9 +1,9 @@
 
 import { LucideAward, Notebook, ShoppingCart, UserRoundCheck } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useUserStore } from "../store/authuser";
-import { useVendorStore } from "../store/authvendor";
-import { useCartStore } from "../store/cart";
+import { useUserStore } from "../../store/authuser";
+import { useVendorStore } from "../../store/authvendor";
+import { useCartStore } from "../../store/cart";
 
 const NavBarCheck = () => {
   const { logout, authUser } = useUserStore();
@@ -14,7 +14,7 @@ const NavBarCheck = () => {
       {authUser && (
         <div className="flex flex-row items-center xl:flex-row-reverse gap-10 bg-gray-800 p-4 rounded-lg">
           <NavLink
-            to="/box"
+            to="/user/client/dashboard/profile"
             className="text-white flex flex-col items-center justify-center"
           >
             <UserRoundCheck className="h-5 w-5 text-white" />
@@ -24,7 +24,7 @@ const NavBarCheck = () => {
               <span className="uppercase text-gray-400 ">{authUser.name}</span>
             )}
           </NavLink>
-          <NavLink to="/bascket" className="text-white">
+          <NavLink to="/user/client/dashboard/basket" className="text-white">
             <div className="relative">
               <ShoppingCart className="h-5 w-5 text-white" />
               {cartItems.length > 0 ? (<span className="absolute -top-2 -right-4 bg-red-500 text-white rounded-full px-2 py-1 text-xs">

@@ -41,7 +41,7 @@ export const useOrder = create<State>((set) => ({
     createOrder: async (orderData) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await api.post("/commande/create", orderData);
+            const response = await api.post("/commande", orderData);
             set((state) => ({
                 orders: [...state.orders, response.data.data],
                 isLoading: false,

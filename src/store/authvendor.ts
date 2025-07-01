@@ -72,6 +72,15 @@ export const useVendorStore = create<State>()(
             token: response.data.token,
             isLogin: false,
           });
+          localStorage.setItem(
+            "vendor-store",
+            JSON.stringify({
+              state: {
+                authVendor: response.data.data,
+                token: response.data.token,
+              }
+            })
+          )
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur Inconnue";
@@ -83,6 +92,8 @@ export const useVendorStore = create<State>()(
         try {
           await api.post("/vendor/logout");
           set({ authVendor: null, token: null, isCheckingAuth: false });
+          localStorage.removeItem("vendor-store");
+          window.location.href = "/vendor/sign-in"; // Redirection après déconnexion
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur inconnue";

@@ -1,5 +1,5 @@
 import { LucideCamera } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useArticleStore } from "../../store/article";
 import { FormArticle } from "../../constants/types";
 
@@ -10,7 +10,7 @@ type Article = {
   category: string;
   stock: number;
   rate?: number;
-  image: File | null;
+  image?: File | null;
   vendor?:
     | string
     | {
@@ -20,7 +20,7 @@ type Article = {
       };
 };
 const ArticleForm = () => {
-  const { add,isAdd, isError } = useArticleStore();
+  const { add, isAdd, isError } = useArticleStore();
   const initialState = useMemo<Article>(
     () => ({
       name: "",
@@ -51,7 +51,7 @@ const ArticleForm = () => {
     }
     const formData = new FormData();
     Object.entries(article).forEach(([key, value]) => {
-      if (key !== null && value !== undefined) {
+      if (value !== null && value !== undefined) {
         formData.append(key, value as string | Blob);
       }
     });
@@ -62,6 +62,13 @@ const ArticleForm = () => {
       imageRef.current.value = ""; // Reset file input
     }
   };
+
+  useEffect(() => {
+    if(article.image) {
+      const imageUrl = URL.createObjectURL(article.image);
+      return () => URL.revokeObjectURL(imageUrl); // Clean up the object URL
+    }
+  }, [article.image]);
 
   return (
     <div className="w-full max-w-md mx-auto mt-10 bg-gray-100 bg-opacity-50 rounded-lg shadow-lg p-4">
@@ -193,3 +200,4 @@ const ArticleForm = () => {
 };
 
 export default ArticleForm;
+
