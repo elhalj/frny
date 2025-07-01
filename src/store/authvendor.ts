@@ -30,7 +30,6 @@ type State = {
   isError: string | null;
   token?: string | null;
   isCheckingAuth: boolean;
-  isCheckingClient: boolean;
   signUp: (data: FormVendor) => Promise<void>;
   login: (data: VendorLogin) => Promise<void>;
   logout: () => void;
@@ -47,15 +46,16 @@ export const useVendorStore = create<State>()(
       isSignUp: false,
       isLogin: false,
       isError: null,
-      token: null,
+      token: (() => {
+        const vendorstore = localStorage.getItem("vendor-store");
+        return vendorstore ? JSON.parse(vendorstore)?.state?.token : null;
+      })(),
       isCheckingAuth: false,
-      isCheckingClient: false,
       signUp: async (data: FormVendor) => {
         set({ isSignUp: true, isError: null });
         try {
           const response = await api.post("/vendor/signUp", data);
-          set({ authVendor: response.data.data, isSignUp: false });
-
+          set({ authVendor: response.data.data, token: response.data.token, isSignUp: false });
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur Inconnue";
@@ -82,11 +82,11 @@ export const useVendorStore = create<State>()(
       logout: async () => {
         try {
           await api.post("/vendor/logout");
-          set({ authVendor: null, token: null });
+          set({ authVendor: null, token: null, isCheckingAuth: false });
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur inconnue";
-          set({ isError: message });
+          set({ isError: message, isCheckingAuth: false });
         }
       },
 
@@ -108,7 +108,8 @@ export const useVendorStore = create<State>()(
       },
     }),
     {
-      name: "vendor-store", // Correct the storage name
+      name: "vendor-store",
     }
   )
 );
+

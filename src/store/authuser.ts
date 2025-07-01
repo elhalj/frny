@@ -50,7 +50,10 @@ export const useUserStore = create<State>()(
       })(),
       isSignUp: false,
       isLogin: false,
-      isError: null,
+      isError: (() => {
+        const userstore = localStorage.getItem("user-store");
+        return userstore ? JSON.parse(userstore)?.state?.authUser : null;
+      })(),
       token: null,
       isCheckingAuth: false,
 
@@ -58,7 +61,7 @@ export const useUserStore = create<State>()(
         set({ isSignUp: true, isError: null });
         try {
           const response = await api.post("/user/signUp", data);
-          set({ authUser: response.data.data, isSignUp: false });
+          set({ authUser: response.data.data, token: response.data.token, isSignUp: false });
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur inconnue";
@@ -72,6 +75,7 @@ export const useUserStore = create<State>()(
           const response = await api.post("/user/login", data);
           set({
             authUser: response.data.data,
+            token: response.data.token,
             isLogin: false,
           });
         } catch (error) {

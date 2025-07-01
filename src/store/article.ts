@@ -61,9 +61,7 @@ export const useArticleStore = create<State>((set) => ({
   add: async (data: FormArticle) => {
     set({ isAdd: true, isError: null });
     try {
-      const response = await api.post("/article/add", data, {
-        headers: {"Content-Type": "multipart/form-data"}
-      });
+      const response = await api.post("/article/add", data);
       set((state) => ({
         articles: state.articles
           ? [...state.articles, response.data.data]

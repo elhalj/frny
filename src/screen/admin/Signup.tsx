@@ -18,10 +18,12 @@ const Signup = () => {
     profilePic: null,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target;
     if (e.target instanceof HTMLInputElement) {
-      const {files} = e.target;
+      const { files } = e.target;
       setFields((prev) => ({
         ...prev,
         [name]: type === "file" ? (files && files[0]) || null : value,
@@ -45,19 +47,21 @@ const Signup = () => {
     await signUp(data as unknown as FormVendor);
     if (imageRef.current) {
       imageRef.current.value = "";
-    } 
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-sky-500 to-indigo-500">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-lg shadow-lg p-8 md:p-12 lg:p-16 w-full md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl"
+        className="bg-white bg-opacity-10 backdrop-blur-md rounded-lg p-8 shadow-lg max-w-md w-full"
       >
-        <h1 className="text-4xl font-bold text-center mb-6">Inscription</h1>
+        <h1 className="text-2xl font-bold text-center mb-6 text-white">
+          Inscription
+        </h1>
         <div className="space-y-4">
           <div>
-            <label htmlFor="name" className="block mb-2">
+            <label htmlFor="name" className="block text-white mb-2">
               Name:
             </label>
             <input
@@ -67,11 +71,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="John"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="firstName" className="block mb-2">
+            <label htmlFor="firstName" className="block text-white mb-2">
               FirstName:
             </label>
             <input
@@ -81,11 +85,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Doe"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block mb-2">
+            <label htmlFor="email" className="block text-white mb-2">
               Email:
             </label>
             <input
@@ -95,11 +99,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="johndoe@gmail.com"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block mb-2">
+            <label htmlFor="password" className="block text-white mb-2">
               Password:
             </label>
             <input
@@ -109,11 +113,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="********"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="address" className="block mb-2">
+            <label htmlFor="address" className="block text-white mb-2">
               Address:
             </label>
             <input
@@ -123,11 +127,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Abidjan rue 25 jean-chale"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="city" className="block mb-2">
+            <label htmlFor="city" className="block text-white mb-2">
               City:
             </label>
             <input
@@ -137,11 +141,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Abidjan"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="municipality" className="block mb-2">
+            <label htmlFor="municipality" className="block text-white mb-2">
               Municipality:
             </label>
             <input
@@ -151,11 +155,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="cocody"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="number" className="block mb-2">
+            <label htmlFor="number" className="block text-white mb-2">
               Number:
             </label>
             <input
@@ -165,11 +169,11 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Your phone number"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
-            <label htmlFor="gender" className="block mb-2">
+            <label htmlFor="gender" className="block text-white mb-2">
               Gender:
             </label>
             <select
@@ -178,7 +182,7 @@ const Signup = () => {
               value={fields.gender}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               <option value="">Select your gender</option>
               <option value="Homme">Homme</option>
@@ -186,7 +190,7 @@ const Signup = () => {
             </select>
           </div>
           <div>
-            <label htmlFor="profilePic" className="block mb-2">
+            <label htmlFor="profilePic" className="block text-white mb-2">
               Profile Picture:
             </label>
             <input
@@ -198,7 +202,7 @@ const Signup = () => {
               title="Upload your profile picture"
               placeholder="Profile picture"
               required
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             <div>
               {fields.profilePic && (
@@ -213,10 +217,11 @@ const Signup = () => {
           <button
             type="submit"
             disabled={isSignUp}
-            className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
           >
             {isSignUp ? "Loading..." : "Sign up"}
           </button>
+        </div>
       </form>
     </div>
   );

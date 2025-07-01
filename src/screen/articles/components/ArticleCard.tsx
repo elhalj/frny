@@ -1,18 +1,20 @@
-import { useState } from "react";
+// import { Button } from "@nextui-org/react";
 import { Article } from "../../../store/article";
+import { useCartStore } from "../../../store/cart";
 
 interface ArticleCardProps {
   article: Article;
 }
 
 const ArticleCard = ({ article }: ArticleCardProps) => {
-  const [low, setLow] = useState(5)
+  const { addToCart } = useCartStore();
+  const low = 5
 
   return (
     <div className="bg-white text-gray-500 rounded-lg shadow-md p-4">
       {article.image && (
         <img 
-          src={article.image} 
+          src={typeof article.image === "string" ? article.image : URL.createObjectURL(article.image)} 
           alt={article.name} 
           className="w-full h-48 object-cover rounded-t-lg"
         />
@@ -44,9 +46,13 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
           </div>
         )}
 
-        {typeof article.vendor === 'object' ? (
+        {typeof article.vendor === 'object' && !Array.isArray(article.vendor) ? (
           <div className="mt-4">
-                      <p className="text-gray-600">Vendeur : {article.vendor.name}</p>
+            <p className="text-gray-600">Vendeur : {article.vendor.name}</p>
+          </div>
+        ) : Array.isArray(article.vendor) ? (
+          <div className="mt-4">
+            Vendeur : {article.vendor.join(", ")}
           </div>
         ) : (
           <div className="mt-4">
@@ -57,7 +63,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
       <div className="flex justify-between items-center mt-4">
         <button type="button" 
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-          onClick={() => alert(`Ajouté au panier : ${article.name}`)}
+          onClick={() => addToCart(article)}
         >
           Ajouter au panier
         </button>

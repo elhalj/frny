@@ -1,11 +1,9 @@
 import { LucideCamera } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useMemo, useRef, useState } from "react";
 import { useArticleStore } from "../../store/article";
 import { FormArticle } from "../../constants/types";
 
 type Article = {
-  _id?: string;
   name: string;
   price: number;
   details: string;
@@ -22,26 +20,20 @@ type Article = {
       };
 };
 const ArticleForm = () => {
-  const { articles, getVendorArticle, add, updateArticle, isError } =
-    useArticleStore();
+  const { add,isAdd, isError } = useArticleStore();
   const initialState = useMemo<Article>(
     () => ({
       name: "",
-      price: 0,
+      price: 2000,
       details: "",
       category: "",
       stock: 0,
-      rate: 0,
       image: null,
-      vendor: undefined,
     }),
     []
   );
   const [article, setArticle] = useState<Article>(initialState);
-  const { id } = useParams<{ id: string }>();
   const imageRef = useRef<HTMLInputElement>(null);
-
-  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
@@ -63,55 +55,14 @@ const ArticleForm = () => {
         formData.append(key, value as string | Blob);
       }
     });
-    if (id) {
-      // Update existing article
-      formData.append("_id", id);
-      await updateArticle(
-        formData as unknown as import("../../store/article").Article,
-        id
-      );
-    } else {
-      // Add new article
-      await add(formData as unknown as FormArticle);
-      if (imageRef.current) {
-        imageRef.current.value = ""; // Reset file input
-      }
+
+    // Add new article
+    await add(formData as unknown as FormArticle);
+    if (imageRef.current) {
+      imageRef.current.value = ""; // Reset file input
     }
   };
-    
-  useEffect(() => {
-    const fetchArticles = async () => {
-      await getVendorArticle();
-    };
-    if (id) {
-      // If id is present, fetch the article to edit
-      fetchArticles();
-      const articleToEdit = articles?.find((art) => art._id === id);
-      if (articleToEdit) {
-        setArticle({
-          name: articleToEdit.name ?? "",
-          price: articleToEdit.price ?? 0,
-          details: articleToEdit.details ?? "",
-          category: articleToEdit.category ?? "",
-          stock: articleToEdit.stock ?? 0,
-          rate: articleToEdit.rate ?? 0,
-          image: null, // Reset image to null for file input
-          vendor: Array.isArray(articleToEdit.vendor)
-            ? undefined
-            : articleToEdit.vendor && typeof articleToEdit.vendor === "object"
-            ? {
-                _id: articleToEdit.vendor._id,
-                name: articleToEdit.vendor.name,
-                email: articleToEdit.vendor.email ?? "",
-              }
-            : articleToEdit.vendor,
-        });
-      }
-    } else {
-      // Reset form for adding a new article
-      setArticle(initialState);
-    }
-  }, [id, articles, getVendorArticle, initialState]);
+
   return (
     <div className="w-full max-w-md mx-auto mt-10 bg-gray-100 bg-opacity-50 rounded-lg shadow-lg p-4">
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -234,7 +185,7 @@ const ArticleForm = () => {
           type="submit"
           className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          {article._id ? "Update Article" : " Add Article"}
+          {isAdd ? "Loading..." : "Add Article"}
         </button>
       </form>
     </div>
