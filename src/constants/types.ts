@@ -43,12 +43,6 @@ export type FormArticle = {
   category: string;
   stock: number;
   rate?: number;
-  image: File | null; // Modification pour gérer les fichiers
-  vendor?:
-    | string
-    | {
-        _id: string;
-        name: string;
-        email?: string;
-      };
+  image?: string; // Modification pour gérer les fichiers
+  
 };

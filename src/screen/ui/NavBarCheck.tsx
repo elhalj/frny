@@ -47,7 +47,7 @@ const NavBarCheck = () => {
       {authVendor && (
         <div className="flex flex-row items-center xl:flex-row-reverse gap-10 bg-gray-800 p-4 rounded-lg">
           <NavLink
-            to="/vendor/box"
+            to="/vendor/admin/dashboard"
             className="text-white flex flex-col items-center justify-center"
           >
             <LucideAward className="h-5 w-5 text-white" />

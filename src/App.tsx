@@ -13,6 +13,7 @@ import UserBascket from "./screen/ui/Bascket";
 import UserOrders from "./screen/ui/Orders";
 import UserProfile from "./screen/ui/Profile";
 import UserDashboard from "./screen/client/UserDashboard";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   // Pour éviter les erreurs de chargement de la page en production
@@ -52,6 +53,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <Toaster position="top-right" reverseOrder={false} />
     </>
   );
 }

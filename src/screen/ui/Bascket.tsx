@@ -1,24 +1,56 @@
 import { useEffect, useState } from "react";
 import { useCartStore } from "../../store/cart";
-import { useOrder } from "../../store/order";
+import { Order, useOrder } from "../../store/order";
 import { useUserStore } from "../../store/authuser";
+import { toast } from "react-hot-toast";
 
 const Bascket = () => {
-  const { cartItems, removeFromCart, totalAmount, increaseQuantity, decreaseQuantity } = useCartStore();
+  const { cartItems, removeFromCart, totalAmount, increaseQuantity, decreaseQuantity, clearCart } = useCartStore();
   const { authUser } = useUserStore();
   const { createOrder } = useOrder();
   const [cart, setCart] = useState(cartItems);
+
+  const handleCheckout = async () => {
+    if (!authUser) {
+      return;
+    }
+    try {
+      const orderData: Order = {
+        user: authUser,
+        article: cartItems.map(item => ({
+          article: {
+            _id: item._id,
+            name: item.name,
+            price: item.price,
+            category: item.category,
+            image: item.image,
+            vendor: item.vendor,
+            // Ajoute d'autres propriétés si besoin
+          },
+          quantity: item.quantity,
+        })),
+        quantity: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+        totalPrice: totalAmount,
+        vendor: cartItems[0].vendor, // À adapter si multi-vendeurs
+      };
+      await createOrder(orderData);
+      toast.success("Commande passée !");
+      // Clear cart after successful order creation
+      clearCart();
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast.error("Erreur lors de la commande");
+    }
+  };
   useEffect(() => {
     const fetchCart = () => {
       if (cartItems.length > 0) {
         setCart(cartItems);
-        
       }
     };
     fetchCart();
   }, [cartItems]);
 
-  const vendorId = cart.length > 0 ? cart[0].vendor : "";
 
   return (
     <div className="h-screen bg-gray-900 rounded-lg shadow-lg p-6">
@@ -53,13 +85,7 @@ const Bascket = () => {
         <button
           type="button"
           onClick={() =>
-            createOrder({
-              user: authUser?._id, // Replace with actual user id
-              article: cart.map(item => item._id),
-              quantity: cart.reduce((sum, item) => sum + item.quantity, 0),
-              totalPrice: totalAmount,
-              vendor: vendorId
-            })
+            handleCheckout()
           }
           className="bg-blue-600 text-white py-2 px-4 rounded-lg"
         >

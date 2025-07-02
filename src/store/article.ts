@@ -12,11 +12,11 @@ export type Article = {
         name: string;
         email?: string;
       }
-  | string[];
+  | string;
   rate?: number;
   details?: string;
   stock?: number;
-  image?: File | null;
+  image?: File | string | null;
 };
 
 type State = {
@@ -61,7 +61,11 @@ export const useArticleStore = create<State>((set) => ({
   add: async (data: FormArticle) => {
     set({ isAdd: true, isError: null });
     try {
-      const response = await api.post("/article/add", data);
+      const response = await api.post("/article/add", data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
+      });
       set((state) => ({
         articles: state.articles
           ? [...state.articles, response.data.data]
