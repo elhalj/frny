@@ -66,16 +66,38 @@ export const useArticleStore = create<State>((set) => ({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
       });
+      
+      // Check if the response is successful
+      if (!response.data || !response.data.data) {
+        throw new Error("Invalid response from server");
+      }
+      
       set((state) => ({
         articles: state.articles
           ? [...state.articles, response.data.data]
           : [response.data.data],
+        vendorArticles: state.vendorArticles
+          ? [...state.vendorArticles, response.data.data]
+          : [response.data.data],
         isAdd: false,
       }));
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Erreur inconnue";
+    } catch (error: any) {
+      let message = "Unknown error occurred";
+      
+      if (error.response) {
+        // Server responded with error status
+        message = error.response.data?.message || error.response.data?.error || `Server error: ${error.response.status}`;
+      } else if (error.request) {
+        // Request was made but no response received
+        message = "Network error: Unable to connect to server";
+      } else if (error instanceof Error) {
+        // Something else happened
+        message = error.message;
+      }
+      
+      console.error("Article add error:", error);
       set({ isError: message, isAdd: false });
+      throw error; // Re-throw to allow component to handle it
     }
   },
 
