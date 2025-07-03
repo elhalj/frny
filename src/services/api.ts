@@ -32,9 +32,12 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401) {
+        useVendorStore.getState().logout();
+        window.location.href = "/vendor/sign-in";
+      }
       useUserStore.getState().logout();
-      useVendorStore.getState().logout();
-      window.location.href = "/sign-in";
+      window.location.href = "/user/sign-in";
     }
     return Promise.reject(error);
   }

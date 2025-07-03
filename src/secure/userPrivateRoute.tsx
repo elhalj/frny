@@ -7,7 +7,7 @@ const UserPrivateRoute = () => {
     const { authUser } = useUserStore()
     
     if (!authUser) {
-        return <Navigate to="sign-in" replace />
+        return <Navigate to="/sign-in" replace />
     }
   return <Outlet />
 }

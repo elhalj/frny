@@ -1,10 +1,17 @@
 import { create } from "zustand";
 import api from "../services/api";
+import { Article } from "./article";
+import { User } from "./authuser";
+import toast from "react-hot-toast";
 
+export type OrdeItem = {
+    article: Article;
+    quantity: number;
+}
 export type Order = {
     _id?: string;
-    user: string;
-    article: string;
+    user: User;
+    article: OrdeItem[];
     quantity: number;
     totalPrice: number;
     status?: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
@@ -12,13 +19,20 @@ export type Order = {
     createdAt?: string;
     updatedAt?: string;
 };
+interface ErrorResponse {
+    response: {
+      data: {
+        message: string;
+      };
+    };
+  }
 
 type State = {
     orders: Order[];
     isLoading: boolean;
     error: string | null;
     fetchOrders: () => Promise<void>;
-    createOrder: (orderData: Omit<Order, "_id" | "createdAt" | "updatedAt">) => Promise<void>;
+    createOrder: (orderData: Order) => Promise<void>;
     updateOrder: (orderId: string, orderData: Partial<Order>) => Promise<void>;
     deleteOrder: (orderId: string) => Promise<void>;
 };
@@ -30,7 +44,7 @@ export const useOrder = create<State>((set) => ({
     fetchOrders: async () => {
         set({ isLoading: true, error: null });
         try {
-            const response = await api.get("/commande/get");
+            const response = await api.get("/commande/user/get");
             set({ orders: response.data.data, isLoading: false });
         } catch (error) {
             const message = error instanceof Error ? error.message : "Erreur inconnue";
@@ -41,7 +55,7 @@ export const useOrder = create<State>((set) => ({
     createOrder: async (orderData) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await api.post("/commande/create", orderData);
+            const response = await api.post("/commande/user/create", orderData);
             set((state) => ({
                 orders: [...state.orders, response.data.data],
                 isLoading: false,
@@ -49,6 +63,7 @@ export const useOrder = create<State>((set) => ({
         } catch (error) {
             const message = error instanceof Error ? error.message : "Erreur inconnue";
             set({ error: message, isLoading: false });
+            toast.error((error as ErrorResponse).response?.data?.message || "Erreur lors de la création de la commande")
         }
     },
 

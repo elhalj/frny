@@ -3,7 +3,7 @@ import { useVendorStore, VendorLogin } from "../../store/authvendor";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { login, isLogin, authVendor } = useVendorStore();
+  const { login, isLogin} = useVendorStore();
   const [fields, setFields] = useState<VendorLogin>({
     email: "",
     password: "",
@@ -22,10 +22,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(fields);
-      if (authVendor) {
-        navigate("/vendor/admin/dashboard");
-      }
-
+      navigate("/vendor/admin/dashboard");
     } catch (error) {
       console.error(error);
       alert("Erreur lors de la connexion");
@@ -39,13 +36,10 @@ const Login = () => {
         className="bg-black bg-opacity-50 backdrop-blur-md rounded-lg p-8 shadow-lg max-w-md w-full"
       >
         <h1 className="text-2xl font-bold text-center mb-6 text-gray-100">
-          Connexion
+          Vendor
         </h1>
         <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-gray-300 mb-2 "
-          >
+          <label htmlFor="email" className="block text-gray-300 mb-2 ">
             Email:
           </label>
           <input
@@ -59,10 +53,7 @@ const Login = () => {
           />
         </div>
         <div className="mb-6">
-          <label
-            htmlFor="password"
-            className="block text-gray-300 mb-2 "
-          >
+          <label htmlFor="password" className="block text-gray-300 mb-2 ">
             Password:
           </label>
 

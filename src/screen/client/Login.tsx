@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { UserLogin, useUserStore } from "../../store/authuser";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const { login, isLogin } = useUserStore();
@@ -23,6 +24,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(fields);
+      toast.success("Connexion réussie");
       navigate("/");
     } catch (error) {
       console.error(error);

@@ -2,8 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { FormUser } from "../constants/types";
 import api from "../services/api";
+import toast from "react-hot-toast";
 
-type User = {
+export type User = {
   _id: string;
   name: string;
   email: string;
@@ -78,6 +79,15 @@ export const useUserStore = create<State>()(
             token: response.data.token,
             isLogin: false,
           });
+          localStorage.setItem(
+            "user-store",
+            JSON.stringify({
+              state: {
+                authUser: response.data.data,
+                token: response.data.token,
+              },
+            })
+          );
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur inconnue";
@@ -94,6 +104,9 @@ export const useUserStore = create<State>()(
           isError: null,
           isCheckingAuth: false,
         });
+        toast.success("Déconnexion réussie");
+        localStorage.removeItem("user-store");
+        window.location.href = "/user/sign-in"; // Redirection après déconnexion
       },
 
       checkAuth: async () => {
