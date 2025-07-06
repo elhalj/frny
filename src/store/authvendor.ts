@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { FormVendor } from "../constants/types";
 import api from "../services/api";
 import { persist } from "zustand/middleware";
+import toast from "react-hot-toast";
 
 type VendorStore = {
   _id: string;
@@ -30,7 +31,7 @@ type State = {
   isError: string | null;
   token?: string | null;
   isCheckingAuth: boolean;
-  signUp: (data: FormVendor) => Promise<void>;
+  signUp: (data: FormData) => Promise<void>;
   login: (data: VendorLogin) => Promise<void>;
   logout: () => void;
   checkAuthVendor: () => Promise<void>;
@@ -51,15 +52,21 @@ export const useVendorStore = create<State>()(
         return vendorstore ? JSON.parse(vendorstore)?.state?.token : null;
       })(),
       isCheckingAuth: false,
-      signUp: async (data: FormVendor) => {
+      signUp: async (data: FormData) => {
         set({ isSignUp: true, isError: null });
         try {
-          const response = await api.post("/vendor/signUp", data);
+          const response = await api.post("/vendor/signUp", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
           set({ authVendor: response.data.data, token: response.data.token, isSignUp: false });
+          toast.success("Enregistrement effectué avec succès")
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur Inconnue";
           set({ isError: message, isSignUp: false });
+          toast.error( "Une erreur est survenue lors de l'inscription")
         }
       },
 
@@ -81,10 +88,12 @@ export const useVendorStore = create<State>()(
               }
             })
           )
+          toast.success('Connecté')
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur Inconnue";
           set({ isError: message, isLogin: false });
+          toast.error("Erreur de connexion")
         }
       },
 
@@ -94,10 +103,12 @@ export const useVendorStore = create<State>()(
           set({ authVendor: null, token: null, isCheckingAuth: false });
           localStorage.removeItem("vendor-store");
           window.location.href = "/vendor/sign-in"; // Redirection après déconnexion
+          toast.success("Déconnecté")
         } catch (error) {
           const message =
             error instanceof Error ? error.message : "Erreur inconnue";
           set({ isError: message, isCheckingAuth: false });
+          toast.error("Erreur de déconnexion")
         }
       },
 

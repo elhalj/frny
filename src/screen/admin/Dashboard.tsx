@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useArticleStore } from "../../store/article";
 import { useEffect } from "react";
 
-const vite_uploadUrl = import.meta.env.VITE_UPLOAD_URL;
+const vite_uploadUrl = import.meta.env.VITE_UPLOAD_URL_ADMIN_DASHBOARD;
 const Dashboard = () => {
   const { getVendorArticle, vendorArticles } = useArticleStore();
 

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 // import { FormArticle } from "../constants/types";
 import api from "../services/api";
+import toast from "react-hot-toast";
 
 export type Article = {
   _id: string;
@@ -82,6 +83,7 @@ export const useArticleStore = create<State>((set) => ({
           : [response.data.data],
         isAdd: false,
       }));
+      toast.success("Article ajouté avec succès")
     } catch (error) {
       let message = "Unknown error occurred";
       
@@ -100,6 +102,7 @@ export const useArticleStore = create<State>((set) => ({
       console.error("Article add error:", error);
       set({ isError: message, isAdd: false });
       // throw error; // Re-throw to allow component to handle it
+      toast.error("Erreur lors de l'ajout")
     }
   },
 

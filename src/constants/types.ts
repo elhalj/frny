@@ -20,7 +20,7 @@ export type FormVendor = {
   municipality: string;
   number: string;
   gender: "Homme" | "Femme";
-  profilePic: File | null | undefined; // Modification du type pour les fichiers
+  profilePic: File | null ; // Modification du type pour les fichiers
 };
 
 export type FormUser = {
@@ -33,7 +33,7 @@ export type FormUser = {
   street: string;
   city: string;
   municipality: string;
-  image?: File | null | undefined;
+  image?: File | null;
 };
 
 export type FormArticle = {

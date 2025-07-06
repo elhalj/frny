@@ -6,7 +6,7 @@ interface ArticleCardProps {
   article: Article;
 }
 
-
+const vite_uploadUrlHome = import.meta.env.VITE_UPLOAD_URL_ADMIN_DASHBOARD;
 const ArticleCard = ({ article }: ArticleCardProps) => {
   const { addToCart } = useCartStore();
   const low = 5
@@ -19,10 +19,10 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         <img 
           src={
             typeof article.image === "string" && article.image
-              ? article.image
+              ? `${vite_uploadUrlHome}/${article.image}`
               : article.image instanceof File
                 ? URL.createObjectURL(article.image)
-                : "/default-image.png" // image par défaut
+                : ""
           }
           alt={article.name}
           className="w-full h-48 object-cover  "

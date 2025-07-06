@@ -31,10 +31,10 @@ const AddArticleForm: React.FC = () => {
   const validateForm = (): boolean => {
     const newError: AddError = {};
 
-    if (formData.name.length < 4) {
-      newError.name = "Le nom de l'article doit au moins depasser 4 lettres"
-    } else if (!formData.name.trim()) {
+    if (!formData.name.trim()) {
       newError.name = "Le nom de l'article est requis"
+    } else if (formData.name.length < 4) {
+      newError.name = "Le nom de l'article doit au moins depasser 4 lettres"
     }
 
     if (!formData.details.trim()) {
