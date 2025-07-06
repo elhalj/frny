@@ -38,11 +38,28 @@ export type FormUser = {
 
 export type FormArticle = {
   name: string;
-  price: number;
+  price: string;
   details: string;
   category: string;
-  stock: number;
+  stock: string;
   rate?: number;
-  image?: string; // Modification pour gérer les fichiers
+  image: File | null; // Modification pour gérer les fichiers
   
+};
+
+export type Article = {
+  _id: string;
+  name: string;
+  price: number;
+  category: string;
+  vendor:{
+        _id: string;
+        name: string;
+        email?: string;
+      }
+  | string;
+  rate?: number;
+  details?: string;
+  stock?: number;
+  image?: string | File;
 };

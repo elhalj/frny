@@ -54,7 +54,7 @@ const Signup = () => {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
       <form
         onSubmit={handleSubmit}
-        className="bg-white bg-opacity-10 backdrop-blur-md rounded-lg p-8 shadow-lg max-w-md w-full"
+        className="bg-black bg-opacity-30 backdrop-blur-md rounded-lg p-8 shadow-lg max-w-md w-full"
       >
         <h1 className="text-2xl font-bold text-center mb-6 text-white">
           Inscription
@@ -71,7 +71,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="John"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Doe"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -99,7 +99,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="johndoe@gmail.com"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -113,7 +113,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="********"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -127,7 +127,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Abidjan rue 25 jean-chale"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -141,7 +141,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Abidjan"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -155,7 +155,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="cocody"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -169,7 +169,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Your phone number"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -182,7 +182,7 @@ const Signup = () => {
               value={fields.gender}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               <option value="">Select your gender</option>
               <option value="Homme">Homme</option>
@@ -202,7 +202,7 @@ const Signup = () => {
               title="Upload your profile picture"
               placeholder="Profile picture"
               required
-              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             <div>
               {fields.profilePic && (

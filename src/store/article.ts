@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { FormArticle } from "../constants/types";
+// import { FormArticle } from "../constants/types";
 import api from "../services/api";
 
 export type Article = {
@@ -16,7 +16,7 @@ export type Article = {
   rate?: number;
   details?: string;
   stock?: number;
-  image?: File | string | null;
+  image?: string | File;
 };
 
 type State = {
@@ -29,7 +29,7 @@ type State = {
   isUpdated: boolean;
   isDeleted: boolean;
   isChecked: boolean;
-  add: (data: FormArticle) => Promise<void>;
+  add: (data: FormData) => Promise<void>;
   getVendorArticle: () => Promise<void>;
   updateArticle: (data: Article, articleId: string) => Promise<void>;
   deleteArticle: (articleId: string) => Promise<void>;
@@ -58,24 +58,48 @@ export const useArticleStore = create<State>((set) => ({
   isVendorLoading: false,
   vendorError: null,
 
-  add: async (data: FormArticle) => {
+  add: async (data: FormData) => {
     set({ isAdd: true, isError: null });
     try {
       const response = await api.post("/article/add", data, {
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        },
       });
+      
+      // Check if the response is successful
+      if (!response.data || !response.data.data) {
+        throw new Error("Invalid response from server");
+      }
+      
       set((state) => ({
         articles: state.articles
           ? [...state.articles, response.data.data]
           : [response.data.data],
+        vendorArticles: state.vendorArticles
+          ? [...state.vendorArticles, response.data.data]
+          : [response.data.data],
         isAdd: false,
       }));
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Erreur inconnue";
+      let message = "Unknown error occurred";
+      
+      if (error && typeof error === "object" && "response" in error) {
+        // Server responded with error status
+        // @ts-expect-error: error might have response property
+        message = error.response?.data?.message || error.response?.data?.error || `Server error: ${error.response?.status}`;
+      } else if (error && typeof error === "object" && "request" in error) {
+        // Request was made but no response received
+        message = "Network error: Unable to connect to server";
+      } else if (error instanceof Error) {
+        // Something else happened
+        message = error.message;
+      }
+      
+      console.error("Article add error:", error);
       set({ isError: message, isAdd: false });
+      // throw error; // Re-throw to allow component to handle it
     }
   },
 
