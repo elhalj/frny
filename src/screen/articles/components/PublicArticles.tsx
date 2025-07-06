@@ -1,13 +1,17 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useArticleStore } from "../../../store/article";
 import ArticleCard from "./ArticleCard";
 
 const PublicArticles = () => {
   const { publicArticles, getAllArticle, isPublicLoading, publicError } = useArticleStore();
 
-  useEffect(() => {
+  const fetchArticles = useCallback(() => {
     getAllArticle();
   }, [getAllArticle]);
+
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
 
   if (isPublicLoading) return <div className="text-center text-lg py-4">Chargement des articles...</div>;
   if (publicError) return <div className="text-center text-red-500 py-4">Erreur : {publicError}</div>;
@@ -29,3 +33,4 @@ const PublicArticles = () => {
 };
 
 export default PublicArticles;
+

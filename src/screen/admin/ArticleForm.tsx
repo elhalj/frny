@@ -1,471 +1,281 @@
-import { LucideCamera } from "lucide-react";
-import { useMemo, useRef, useState, useCallback } from "react";
-import { useArticleStore } from "../../store/article";
-import { useVendorStore } from "../../store/authvendor";
-import api from "../../services/api";
+import { useState } from "react";
 import { FormArticle } from "../../constants/types";
+import { useArticleStore } from "../../store/article";
+import { Book, Calculator, Castle, Image, ShoppingBasket, Upload } from "lucide-react";
 
-// Define the type for the article
-type Article = {
-  name: string;
-  price: number;
-  details: string;
-  category: string;
-  stock: number;
-  rate?: number;
-  image?: File | null;
-  vendor?:
-    | string
-    | {
-        _id: string;
-        name: string;
-        email: string;
-      };
-};
 
-// Define validation errors type
-type ValidationErrors = {
+interface AddError {
   name?: string;
   price?: string;
   details?: string;
   category?: string;
   stock?: string;
   image?: string;
-};
+}
 
-const ArticleForm = () => {
-  const { add, isAdd, isError } = useArticleStore(); // Article store hooks
-  const { authVendor } = useVendorStore(); // Vendor store hooks
-  const [imageUrl, setImageUrl] = useState<string | null>(null); // State for image URL
-  const [isUploading, setIsUploading] = useState(false); // State for upload status
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+const AddArticleForm: React.FC = () => {
+  const {add} = useArticleStore()
+  const [formData, setFormData] = useState<FormArticle>({
+    name: "",
+    price: "2000",
+    details: "",
+    category: "",
+    stock: "4",
+    image:  null as File | null
+  })
 
-  // Initial state for the article form
-  const initialState = useMemo<Article>(
-    () => ({
-      name: "",
-      price: 2000,
-      details: "",
-      category: "",
-      stock: 0,
-      image: null,
-      vendor: authVendor?._id || "", // Vendor ID
-    }),
-    [authVendor]
-  );
+  const [errors, setErrors] = useState<AddError>({});
+  const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
-  const [article, setArticle] = useState<Article>(initialState); // Article state
-  const imageRef = useRef<HTMLInputElement>(null); // Reference for the image input
+  const validateForm = (): boolean => {
+    const newError: AddError = {};
 
-  // Validation function
-  const validateForm = useCallback((): boolean => {
-    const errors: ValidationErrors = {};
-
-    if (!article.name.trim()) {
-      errors.name = "Article name is required";
+    if (!formData.name.trim()) {
+      newError.name = "Le nom de l'article est requis"
+    } else if (formData.name.length < 4) {
+      newError.name = "Le nom de l'article doit au moins depasser 4 lettres"
     }
 
-    if (article.price <= 0) {
-      errors.price = "Price must be greater than 0";
-    }
-
-    if (!article.details.trim()) {
-      errors.details = "Article details are required";
-    }
-
-    if (!article.category.trim()) {
-      errors.category = "Category is required";
-    }
-
-    if (article.stock < 0) {
-      errors.stock = "Stock cannot be negative";
-    }
-
-    if (!imageUrl && !article.image) {
-      errors.image = "Image is required";
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  }, [article, imageUrl]);
-
-  // Function to upload the image
-  const uploadImage = async (file: File): Promise<string> => {
-    setIsUploading(true);
-    setUploadError(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const response = await api.post("/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (!response.data.url) {
-        throw new Error("No URL returned from upload");
-      }
-
-      setImageUrl(response.data.url);
-      return response.data.url;
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unknown upload error";
-      setUploadError(`Upload failed: ${message}`);
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  // Handle input changes
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files } = e.target;
-    
-    // Clear validation error for the field being changed
-    if (validationErrors[name as keyof ValidationErrors]) {
-      setValidationErrors(prev => ({ ...prev, [name]: undefined }));
+    if (!formData.details.trim()) {
+     newError.details = "Les détails de l'article sont réquis"
     }
     
-    if (name === "image" && files && files[0]) {
-      const file = files[0];
-      
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        setUploadError("Please select a valid image file");
-        return;
-      }
-      
-      // Validate file size (max 5MB)
+    if (!formData.category.trim()) {
+      newError.category = "Vous devez ajouter un category de l'article"
+    }
+
+    if (!formData.image) {
+      newError.image = "Veuillez sélectionner une image";
+    }
+    setErrors(newError);
+    return Object.keys(newError).length === 0
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    
+    if (errors[name as keyof AddError]) {
+      setErrors((prev) => ({...prev, [name]: undefined}))
+    }
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setUploadError("Image size must be less than 5MB");
+        setErrors((prev) => ({...prev, image: "La taille de l'image ne doit pas depasser  5MB"}))
         return;
       }
-      
-      setArticle(prev => ({ ...prev, image: file }));
-      
-      try {
-        await uploadImage(file);
-        // Clear any previous upload errors
-        setUploadError(null);
-      } catch (error) {
-        console.error("Upload failed:", error);
-        // Error is already set in uploadImage function
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        setErrors((prev) => ({ ...prev, image: "Le type de fichier n'est pas autorisé" }))
+        return;
       }
-    } else {
-      // Handle other input types
-      const processedValue = name === "price" || name === "stock" 
-        ? Number(value) 
-        : value;
-      
-      setArticle(prev => ({ ...prev, [name]: processedValue }));
-    }
-  };
+      setFormData((prev) => ({ ...prev, image: file }));
+      setErrors((prev) => ({ ...prev, image: undefined }));
 
-  // Reset form function
-  const resetForm = useCallback(() => {
-    setArticle(initialState);
-    setImageUrl(null);
-    setUploadError(null);
-    setValidationErrors({});
-    setSuccessMessage(null);
-    
-    if (imageRef.current) {
-      imageRef.current.value = "";
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      }
+      reader.readAsDataURL(file);
     }
-  }, [initialState]);
+  }
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Prevent double submission
-    if (isSubmitting || isAdd) {
+    if(!validateForm()) {
       return;
     }
 
-    // Validate form
-    if (!validateForm()) {
-      return;
-    }
-
-    // Check if image is still uploading
-    if (isUploading) {
-      setUploadError("Please wait for image upload to complete");
-      return;
-    }
-
-    // Check if we have an image URL
-    if (!imageUrl) {
-      setUploadError("Image not uploaded yet");
-      return;
-    }
-
-    setIsSubmitting(true);
-
+    setLoading(true);
     try {
-      // Preparing article data for submission
-      const articleData: FormArticle = {
-        name: article.name.trim(),
-        price: article.price,
-        details: article.details.trim(),
-        category: article.category.trim(),
-        stock: article.stock,
-        image: imageUrl,
-      };
+      const formDataToSend = new FormData();
 
-      console.log("Submitting article:", articleData);
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("price", formData.price);
+    formDataToSend.append("details", formData.details);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("stock", formData.stock);
 
-      await add(articleData);
-      
-      // Show success message
-      setSuccessMessage("Article added successfully!");
-      
-      // Reset form after successful submission
-      setTimeout(() => {
-        resetForm();
-      }, 2000); // Reset after 2 seconds to show success message
-      
-    } catch (error) {
-      console.error("Failed to submit article:", error);
-      // Error handling is managed by the store, but we can add additional UI feedback here
-    } finally {
-      setIsSubmitting(false);
+    if (formData.image) {
+      formDataToSend.append("image", formData.image)
     }
-  };
-
-  // Determine if submit button should be disabled
-  const isSubmitDisabled = isAdd || isSubmitting || isUploading;
+      
+    await add(formDataToSend)
+    } catch (error) {
+      console.error("Erreur", error)
+      alert("Erreur de connexion au server");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="w-full max-w-md mx-auto mt-10 bg-gray-100 bg-opacity-50 rounded-lg shadow-lg p-4">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Article Name *
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            title="Enter the article name"
-            placeholder="Article name"
-            value={article.name}
-            onChange={handleChange}
-            className={`block w-full px-4 py-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-              validationErrors.name ? 'border-red-500' : 'border-gray-300'
-            }`}
-            required
-          />
-          {validationErrors.name && (
-            <p className="mt-1 text-sm text-red-500">{validationErrors.name}</p>
-          )}
+     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Ajouter un  article</h2>
+          <p className="text-gray-600">Rejoignez notre communauté</p>
         </div>
 
-        <div>
-          <label
-            htmlFor="price"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Article Price *
-          </label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            min="0"
-            step="0.01"
-            title="Enter the article price"
-            placeholder="Article price"
-            value={article.price}
-            onChange={handleChange}
-            className={`block w-full px-4 py-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-              validationErrors.price ? 'border-red-500' : 'border-gray-300'
-            }`}
-            required
-          />
-          {validationErrors.price && (
-            <p className="mt-1 text-sm text-red-500">{validationErrors.price}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="details"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Article Details *
-          </label>
-          <input
-            type="text"
-            id="details"
-            name="details"
-            title="Enter the article details"
-            placeholder="Article details"
-            value={article.details}
-            onChange={handleChange}
-            className={`block w-full px-4 py-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-              validationErrors.details ? 'border-red-500' : 'border-gray-300'
-            }`}
-            required
-          />
-          {validationErrors.details && (
-            <p className="mt-1 text-sm text-red-500">{validationErrors.details}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="category"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Article Category *
-          </label>
-          <input
-            type="text"
-            id="category"
-            name="category"
-            title="Enter the category name"
-            placeholder="Category name"
-            value={article.category}
-            onChange={handleChange}
-            className={`block w-full px-4 py-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-              validationErrors.category ? 'border-red-500' : 'border-gray-300'
-            }`}
-            required
-          />
-          {validationErrors.category && (
-            <p className="mt-1 text-sm text-red-500">{validationErrors.category}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="stock"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Article Stock *
-          </label>
-          <input
-            type="number"
-            id="stock"
-            name="stock"
-            min="0"
-            title="Enter the article stock"
-            placeholder="Article stock"
-            value={article.stock}
-            onChange={handleChange}
-            className={`block w-full px-4 py-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-              validationErrors.stock ? 'border-red-500' : 'border-gray-300'
-            }`}
-            required
-          />
-          {validationErrors.stock && (
-            <p className="mt-1 text-sm text-red-500">{validationErrors.stock}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="image"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Article Image *
-          </label>
-          <input
-            type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            ref={imageRef}
-            onChange={handleChange}
-            className={`block w-full px-4 py-2 text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-              validationErrors.image ? 'border-red-500' : 'border-gray-300'
-            }`}
-            disabled={isUploading}
-            required
-          />
-
-          {/* Image upload status and preview */}
-          {isUploading && (
-            <div className="mt-2 flex items-center text-blue-500">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
-              Upload in progress...
+        <form onSubmit={handleSubmit} className="space-y-6 text-gray-700">
+          <div className="flex items-center justify-center mb-6">
+            <div className="relative">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <Image className="w-8 h-8 text-gray-400" />
+                )}
+              </div>
+              <label className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600 transition-colors">
+                <Upload className="w-4 h-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                  aria-label="Upload Image"
+                  name="image"
+                />
+              </label>
             </div>
+          </div>
+          {errors.image && (
+            <p className="text-red-500 text-sm text-center">{errors.image}</p>
           )}
 
-          {uploadError && (
-            <div className="mt-2 text-red-500">{uploadError}</div>
-          )}
-
-          {validationErrors.image && (
-            <p className="mt-1 text-sm text-red-500">{validationErrors.image}</p>
-          )}
-
-          {/* Image preview */}
-          {article.image && !uploadError && (
-            <div className="mt-2">
-              <img
-                src={URL.createObjectURL(article.image)}
-                alt="Preview"
-                className="w-20 h-20 object-cover rounded"
-              />
-              {imageUrl && (
-                <div className="text-green-500 text-sm mt-1">✓ Upload successful</div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name *
+              </label>
+              <div className="relative">
+                <Book className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    errors.name ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Name"
+                />
+              </div>
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
               )}
             </div>
-          )}
 
-          {!article.image && !imageUrl && (
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-20 h-20 flex items-center justify-center mt-2">
-              <LucideCamera className="w-6 h-6 text-gray-500" />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Price *
+              </label>
+              <div className="relative">
+                <Calculator className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    errors.price ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Price"
+                />
+              </div>
+              {errors.price && (
+                <p className="text-red-500 text-sm mt-1">{errors.price}</p>
+              )}
             </div>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          className={`inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-            isSubmitDisabled
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-indigo-600 hover:bg-indigo-700'
-          }`}
-          disabled={isSubmitDisabled}
-        >
-          {isSubmitting || isAdd ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              {isUploading ? "Uploading..." : "Adding Article..."}
-            </>
-          ) : (
-            "Add Article"
-          )}
-        </button>
-
-        {/* Error display */}
-        {isError && (
-          <div className="text-red-500 py-2 bg-red-50 border border-red-200 rounded p-3">
-            <strong>Error:</strong> {isError}
           </div>
-        )}
 
-        {/* Success message */}
-        {successMessage && (
-          <div className="text-green-500 py-2 bg-green-50 border border-green-200 rounded p-3">
-            <strong>Success:</strong> {successMessage}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Details *
+            </label>
+            <div className="relative">
+              <Book className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                name="details"
+                value={formData.details}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.details ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Entrez les détails de l'article"
+                title="Détails de l'article"
+              />
+            </div>
+            {errors.details && (
+              <p className="text-red-500 text-sm mt-1">{errors.details}</p>
+            )}
           </div>
-        )}
-      </form>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Category *
+            </label>
+            <div className="relative">
+              <Castle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.category ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Catégory"
+              />
+            </div>
+            {errors.category && (
+              <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Stock *
+            </label>
+            <div className="relative">
+              <ShoppingBasket className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="number"
+                name="stock"
+                value={formData.stock}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.stock ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Stock"
+              />
+            </div>
+            {errors.stock && (
+              <p className="text-red-500 text-sm mt-1">{errors.stock}</p>
+            )}
+          </div>
+
+         
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? 'Ajout en cours...' : 'Ajouter'}
+          </button>
+        </form>
+
+        
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default ArticleForm;
+export default AddArticleForm

@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { FormArticle } from "../constants/types";
+// import { FormArticle } from "../constants/types";
 import api from "../services/api";
+import toast from "react-hot-toast";
 
 export type Article = {
   _id: string;
@@ -16,7 +17,7 @@ export type Article = {
   rate?: number;
   details?: string;
   stock?: number;
-  image?: File | string | null;
+  image?: string | File;
 };
 
 type State = {
@@ -29,7 +30,7 @@ type State = {
   isUpdated: boolean;
   isDeleted: boolean;
   isChecked: boolean;
-  add: (data: FormArticle) => Promise<void>;
+  add: (data: FormData) => Promise<void>;
   getVendorArticle: () => Promise<void>;
   updateArticle: (data: Article, articleId: string) => Promise<void>;
   deleteArticle: (articleId: string) => Promise<void>;
@@ -58,13 +59,14 @@ export const useArticleStore = create<State>((set) => ({
   isVendorLoading: false,
   vendorError: null,
 
-  add: async (data: FormArticle) => {
+  add: async (data: FormData) => {
     set({ isAdd: true, isError: null });
     try {
       const response = await api.post("/article/add", data, {
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        },
       });
       
       // Check if the response is successful
@@ -81,13 +83,15 @@ export const useArticleStore = create<State>((set) => ({
           : [response.data.data],
         isAdd: false,
       }));
-    } catch (error: any) {
+      toast.success("Article ajouté avec succès")
+    } catch (error) {
       let message = "Unknown error occurred";
       
-      if (error.response) {
+      if (error && typeof error === "object" && "response" in error) {
         // Server responded with error status
-        message = error.response.data?.message || error.response.data?.error || `Server error: ${error.response.status}`;
-      } else if (error.request) {
+        // @ts-expect-error: error might have response property
+        message = error.response?.data?.message || error.response?.data?.error || `Server error: ${error.response?.status}`;
+      } else if (error && typeof error === "object" && "request" in error) {
         // Request was made but no response received
         message = "Network error: Unable to connect to server";
       } else if (error instanceof Error) {
@@ -97,7 +101,8 @@ export const useArticleStore = create<State>((set) => ({
       
       console.error("Article add error:", error);
       set({ isError: message, isAdd: false });
-      throw error; // Re-throw to allow component to handle it
+      // throw error; // Re-throw to allow component to handle it
+      toast.error("Erreur lors de l'ajout")
     }
   },
 

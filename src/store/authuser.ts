@@ -36,7 +36,7 @@ type State = {
   isError: string | null;
   token?: string | null;
   isCheckingAuth: boolean;
-  signUp: (data: FormUser) => Promise<void>;
+  signUp: (data: FormData) => Promise<void>;
   login: (data: UserLogin) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
@@ -58,10 +58,14 @@ export const useUserStore = create<State>()(
       token: null,
       isCheckingAuth: false,
 
-      signUp: async (data: FormUser) => {
+      signUp: async (data: FormData) => {
         set({ isSignUp: true, isError: null });
         try {
-          const response = await api.post("/user/signUp", data);
+          const response = await api.post("/user/signUp", data,{
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
           set({ authUser: response.data.data, token: response.data.token, isSignUp: false });
         } catch (error) {
           const message =

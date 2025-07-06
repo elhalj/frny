@@ -20,7 +20,7 @@ export type FormVendor = {
   municipality: string;
   number: string;
   gender: "Homme" | "Femme";
-  profilePic: File | null | undefined; // Modification du type pour les fichiers
+  profilePic: File | null ; // Modification du type pour les fichiers
 };
 
 export type FormUser = {
@@ -33,16 +33,33 @@ export type FormUser = {
   street: string;
   city: string;
   municipality: string;
-  image?: File | null | undefined;
+  image?: File | null;
 };
 
 export type FormArticle = {
   name: string;
-  price: number;
+  price: string;
   details: string;
   category: string;
-  stock: number;
+  stock: string;
   rate?: number;
-  image?: string; // Modification pour gérer les fichiers
+  image: File | null; // Modification pour gérer les fichiers
   
+};
+
+export type Article = {
+  _id: string;
+  name: string;
+  price: number;
+  category: string;
+  vendor:{
+        _id: string;
+        name: string;
+        email?: string;
+      }
+  | string;
+  rate?: number;
+  details?: string;
+  stock?: number;
+  image?: string | File;
 };

@@ -1,22 +1,34 @@
 // import { Button } from "@nextui-org/react";
-import { Article } from "../../../store/article";
+import { Article } from "../../../constants/types";
 import { useCartStore } from "../../../store/cart";
 
 interface ArticleCardProps {
   article: Article;
 }
 
+const vite_uploadUrlHome = import.meta.env.VITE_UPLOAD_URL_ADMIN_DASHBOARD;
 const ArticleCard = ({ article }: ArticleCardProps) => {
   const { addToCart } = useCartStore();
   const low = 5
+
+  console.log("article.image", article.image);
 
   return (
     <div className="bg-white text-gray-500 rounded-lg shadow-md p-4">
       {article.image && (
         <img 
-          src={typeof article.image === "string" ? article.image : URL.createObjectURL(article.image)} 
-          alt={article.name} 
-          className="w-full h-48 object-cover rounded-t-lg"
+          src={
+            typeof article.image === "string" && article.image
+              ? `${vite_uploadUrlHome}/${article.image}`
+              : article.image instanceof File
+                ? URL.createObjectURL(article.image)
+                : ""
+          }
+          alt={article.name}
+          className="w-full h-48 object-cover  "
+          style={{ transition: "transform 0.3s ease", cursor: "pointer" }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+          onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
         />
       )}
       
@@ -28,7 +40,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         )}
 
         <div className="flex flex-col justify-between">
-          <span className="text-lg font-bold">{article.price?.toFixed(2)} €</span>
+          <span className="text-lg font-bold">{Number(article.price).toFixed(2)} €</span>
           <span className="text-gray-600">Category: {article.category}</span>
         </div>
 
@@ -73,3 +85,4 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
 };
 
 export default ArticleCard;
+
